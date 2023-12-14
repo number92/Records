@@ -14,6 +14,10 @@ SQLAlchemy = "^2.0.23"
 uvicorn = "^0.24.0.post1"
 pydantic = "^2.5.2"
 phonenumbers = "^8.13.26"
+pydantic-settings = "^2.1.0"
+sqlalchemy-utils = "^0.41.1"
+psycopg = "^3.1.14"
+regex = "^2023.10.3"
 
 [tool.poetry.group.dev.dependencies]
 black = "^23.11.0"

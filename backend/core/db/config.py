@@ -12,8 +12,8 @@ class Settings(BaseSettings):
     def DATABASE_URL_asyncpg(self):
         # DSN postgresql+asyncpg://postgres:@localhost:5433/postgres
         url = (
-             f'postgresql+asyncpg://{self.DB_USER}:{self.DB_PASS}'
-             f'@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}'
+            f"postgresql+asyncpg://{self.DB_USER}:{self.DB_PASS}"
+            f"@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
         )
         return url
 
@@ -21,12 +21,12 @@ class Settings(BaseSettings):
     def DATABASE_URL_psycopg(self):
         # DSN postgresql+psycopg://postgres:@localhost:5433/postgres
         url = (
-             f'postgresql+psycopg://{self.DB_USER}:{self.DB_PASS}'
-             f'@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}'
+            f"postgresql+psycopg://{self.DB_USER}:{self.DB_PASS}"
+            f"@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
         )
         return url
 
-    model_config = SettingsConfigDict(env_file='.env')
+    model_config = SettingsConfigDict(env_file=".env")
 
 
 settings = Settings()

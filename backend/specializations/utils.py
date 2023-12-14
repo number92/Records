@@ -10,7 +10,6 @@ from pydantic import BaseModel
 
 
 class PhoneNumber(_PhoneNumber):
-
     @classmethod
     def __get_validators__(cls):
         yield cls.validate
@@ -22,11 +21,10 @@ class PhoneNumber(_PhoneNumber):
         try:
             number = parse(v, None)
         except NumberParseException as ex:
-            raise ValueError(f'Invalid phone number: {v}') from ex
+            raise ValueError(f"Invalid phone number: {v}") from ex
         if not is_possible_number(number):
-            raise ValueError(f'Invalid phone number: {v}')
+            raise ValueError(f"Invalid phone number: {v}")
         return number
-
 
     def json_encode(self) -> str:
         return format_number(self, PhoneNumberFormat.E164)
@@ -36,6 +34,6 @@ class MyModel(BaseModel):
     phone_number: PhoneNumber
 
 
-test_number = PhoneNumber('9811397677')
+test_number = PhoneNumber("9811397677")
 
 print(test_number)
