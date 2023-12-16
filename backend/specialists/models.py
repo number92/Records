@@ -4,7 +4,7 @@ from sqlalchemy import String, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 
-from core.db.database import Base
+from backend.core.db.base import Base
 
 if TYPE_CHECKING:
     from records.models import Record

@@ -1,6 +1,6 @@
-from typing import Annotated
+from typing import Annotated, Optional
 from annotated_types import MaxLen, MinLen
-from pydantic import BaseModel, validator
+from pydantic import BaseModel, ConfigDict, validator
 
 from core.utils import normalize_num
 
@@ -20,4 +20,5 @@ class CreateUser(ShemaUser):
 
 
 class GetUser(ShemaUser):
+    model_config = ConfigDict(from_attributes=True)
     id: int

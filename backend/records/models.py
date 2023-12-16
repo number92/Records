@@ -2,7 +2,7 @@ from sqlalchemy import ForeignKey, String, TIMESTAMP, Date, Time
 from sqlalchemy.orm import Mapped, mapped_column
 
 
-from core.db.database import Base
+from core.db.base import Base
 
 
 class Record(Base):

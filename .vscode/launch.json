@@ -12,10 +12,10 @@
             "cwd": "${workspaceFolder}/backend",
             "args": [
                 "main:app",
-                "--reload",
+                "--reload"
             ],
             "jinja": true,
-            "justMyCode": true
+            "justMyCode": true,
         }
     ]
 }
