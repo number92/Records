@@ -1,10 +1,11 @@
-from typing import TYPE_CHECKING, Optional
+from typing import Optional
+
+
 from sqlalchemy import String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from core.db.base import Base
 
-if TYPE_CHECKING:
-    from records.models import Record
+from records.models import Record
 
 
 class User(Base):

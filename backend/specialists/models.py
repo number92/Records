@@ -1,13 +1,9 @@
-from typing import TYPE_CHECKING
-
 from sqlalchemy import String, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 
-from backend.core.db.base import Base
-
-if TYPE_CHECKING:
-    from records.models import Record
+from core.db.base import Base
+from records.models import Record
 
 
 class Specialist(Base):

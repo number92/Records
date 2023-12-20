@@ -5,8 +5,8 @@ from alembic import context
 from sqlalchemy import pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
-from db.database import Base
-from db.config import settings
+from core.db.base import Base
+from core.db.config import settings
 from users.models import User
 from specialists.models import Specialist
 from specializations.models import Specialization
