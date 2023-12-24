@@ -1,7 +1,10 @@
+from typing import TYPE_CHECKING
 from sqlalchemy import ForeignKey, String, TIMESTAMP, Date, Time
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from core.db.base import Base
-from users.models import User
+
+if TYPE_CHECKING:
+    from users.models import User
 
 
 class Record(Base):

@@ -8,6 +8,7 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 from core.db.base import Base
 from core.db.config import settings
 from users.models import User
+from services.models import Service
 from specialists.models import Specialist
 from specializations.models import Specialization
 from records.models import Record
