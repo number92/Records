@@ -12,7 +12,7 @@ class User(Base):
     """Пользователь"""
 
     name: Mapped[str] = mapped_column(String(256))
-    telegram_id: Mapped[int]
+    telegram_id: Mapped[str]
     phone: Mapped[str]
     records: Mapped[Optional[list["Record"]]] = relationship(
         "Record", back_populates="user"

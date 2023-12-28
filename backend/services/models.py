@@ -1,16 +1,16 @@
 from specialists.models import Specialist
 from core.db.base import Base
-from sqlalchemy import ForeignKey
-from sqlalchemy.orm import Mapped, relationship, mapped_column
+from sqlalchemy.orm import Mapped, relationship
+from services.service_specialist_association import (
+    specialist_service_association,
+)
 
 
 class Service(Base):
     """Услуга"""
 
     name: Mapped[str]
-    specialist_id: Mapped[int | None] = mapped_column(
-        ForeignKey("specialists.id")
-    )
+    duration: Mapped[int]
     specialists: Mapped[list["Specialist"]] = relationship(
-        back_populates="service"
+        secondary=specialist_service_association, back_populates="services"
     )

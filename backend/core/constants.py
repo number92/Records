@@ -1,1 +1,2 @@
 REGION = "RU"
+LEN_T_ID = 10

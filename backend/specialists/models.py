@@ -1,11 +1,15 @@
 from typing import TYPE_CHECKING
 from sqlalchemy import String, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+from core.db.base import Base
+from records.models import Record
+from services.service_specialist_association import (
+    specialist_service_association,
+)
 
 if TYPE_CHECKING:
     from services.models import Service
-from core.db.base import Base
-from records.models import Record
+    from specializations.models import Specialization
 
 
 class Specialist(Base):
@@ -19,10 +23,10 @@ class Specialist(Base):
     specialization_id: Mapped[int] = mapped_column(
         ForeignKey("specializations.id")
     )
-    service_id: Mapped[int | None] = mapped_column(ForeignKey("services.id"))
+    specialization: Mapped["Specialization"] = relationship(
+        back_populates="specialists"
+    )
     services: Mapped[list["Service"]] = relationship(
-        back_populates="specialist"
+        secondary=specialist_service_association, back_populates="specialists"
     )
-    records: Mapped[list["Record"]] = relationship(
-        "Record", back_populates="specialist"
-    )
+    records: Mapped[list["Record"]] = relationship()

@@ -11,6 +11,7 @@ async def create_user(
     async_session: AsyncSession, user_in: CreateUser
 ) -> User | None:
     user = User(**user_in.model_dump())
+
     async_session.add(user)
     await async_session.commit()
     return user

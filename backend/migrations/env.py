@@ -9,6 +9,9 @@ from core.db.base import Base
 from core.db.config import settings
 from users.models import User
 from services.models import Service
+from services.service_specialist_association import (
+    specialist_service_association,
+)
 from specialists.models import Specialist
 from specializations.models import Specialization
 from records.models import Record
