@@ -1,10 +1,13 @@
 from typing import TYPE_CHECKING
-from sqlalchemy import String, ForeignKey
+from sqlalchemy import String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from core.db.base import Base
 from records.models import Record
 from services.service_specialist_association import (
     specialist_service_association,
+)
+from specializations.specialist_specialization_association import (
+    specialist_specialization_association,
 )
 
 if TYPE_CHECKING:
@@ -18,13 +21,11 @@ class Specialist(Base):
     name: Mapped[str] = mapped_column(String(256))
     middle_name: Mapped[str] = mapped_column(String(256))
     last_name: Mapped[str] = mapped_column(String(256))
-    telegram_id: Mapped[int]
+    telegram_id: Mapped[str]
     phone: Mapped[str]
-    specialization_id: Mapped[int] = mapped_column(
-        ForeignKey("specializations.id")
-    )
-    specialization: Mapped["Specialization"] = relationship(
-        back_populates="specialists"
+    specializations: Mapped[list["Specialization"]] = relationship(
+        secondary=specialist_specialization_association,
+        back_populates="specialists",
     )
     services: Mapped[list["Service"]] = relationship(
         secondary=specialist_service_association, back_populates="specialists"

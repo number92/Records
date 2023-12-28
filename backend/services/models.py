@@ -11,6 +11,7 @@ class Service(Base):
 
     name: Mapped[str]
     duration: Mapped[int]
+    price: Mapped[int | None]
     specialists: Mapped[list["Specialist"]] = relationship(
         secondary=specialist_service_association, back_populates="services"
     )

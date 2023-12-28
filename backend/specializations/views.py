@@ -1,5 +1,4 @@
-from typing import Annotated
-from fastapi import APIRouter, Depends, HTTPException, Path, status
+from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from specializations.models import Specialization
 from core.db.db_helper import db_async_helper
