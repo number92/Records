@@ -1,5 +1,7 @@
+from fastapi import HTTPException, status
 from sqlalchemy import Result, select
 from sqlalchemy.ext.asyncio import AsyncSession
+from specializations.models import Specialization
 from specialists.models import Specialist
 from specialists.schemas import (
     CreateSpecialist,
@@ -51,3 +53,18 @@ async def delete_specialist(
 ):
     await async_session.delete(specialist)
     await async_session.commit()
+
+
+async def add_speciality_to_specialist(
+    specialist: Specialist,
+    specialization: Specialization,
+    async_session: AsyncSession,
+):
+    if specialization in specialist.specializations:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Специализация уже добавлена",
+        )
+    specialist.specializations.append(specialization)
+    await async_session.commit()
+    return specialist.specializations

@@ -1,5 +1,7 @@
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
+from specializations.dependencies import get_specialization_by_id
+from specializations.models import Specialization
 from specialists.models import Specialist
 from core.db.db_helper import db_async_helper
 from specialists.schemas import (
@@ -8,7 +10,10 @@ from specialists.schemas import (
     SpecialistUpdate,
     SpecialistUpdatePartial,
 )
-from specialists.dependecies import get_specialist_by_id
+from specialists.dependecies import (
+    get_specialist_by_id,
+    get_specialist_by_id_with_existing_speciality,
+)
 from specialists import crud
 
 router = APIRouter(prefix="/specialists", tags=["Specialists"])
@@ -81,3 +86,22 @@ async def delete_specialist(
 ):
     """Удаление специалиста"""
     await crud.delete_specialist(specialist=specialist, async_session=session)
+
+
+@router.post(
+    "/{specialist_id}/specialties/{specialization_id}/",
+    status_code=status.HTTP_201_CREATED,
+)
+async def add_specialization_to_specialist(
+    specialist: Specialist = Depends(
+        get_specialist_by_id_with_existing_speciality
+    ),
+    specialization: Specialization = Depends(get_specialization_by_id),
+    session: AsyncSession = Depends(db_async_helper.session_dependency),
+):
+    """Добавление специальности к специалисту"""
+    return await crud.add_speciality_to_specialist(
+        async_session=session,
+        specialist=specialist,
+        specialization=specialization,
+    )
