@@ -68,3 +68,17 @@ async def add_speciality_to_specialist(
     specialist.specializations.append(specialization)
     await async_session.commit()
     return specialist.specializations
+
+
+async def delete_speciality_to_specialist(
+    specialist: Specialist,
+    specialization: Specialization,
+    async_session: AsyncSession,
+):
+    if specialization not in specialist.specializations:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Специализация отсутствует у этого специалиста",
+        )
+    specialist.specializations.remove(specialization)
+    await async_session.commit()

@@ -2,7 +2,6 @@ from sqlalchemy import Column, ForeignKey, Integer, Table, UniqueConstraint
 
 from core.db.base import Base
 
-
 specialist_service_association = Table(
     "specialist_service_association",
     Base.metadata,

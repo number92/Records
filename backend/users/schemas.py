@@ -1,4 +1,3 @@
-import re
 from typing import Annotated
 from annotated_types import MaxLen, MinLen, Len
 from pydantic import (

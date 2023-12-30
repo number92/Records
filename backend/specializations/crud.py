@@ -1,13 +1,30 @@
 from sqlalchemy import Result, select
+from sqlalchemy.orm import selectinload, joinedload
 from sqlalchemy.ext.asyncio import AsyncSession
 from specializations.models import Specialization
-from specializations.schemas import CreateSpecialization
+from specializations.schemas import (
+    CreateSpecialization,
+    GetSpecializationWithSpec,
+)
 
 
 async def get_specialization(
     async_session: AsyncSession, specialization_id: int
 ) -> Specialization:
     return await async_session.get(Specialization, specialization_id)
+
+
+async def get_spcialization_with_specialist(
+    specialization_id: int, async_session: AsyncSession
+) -> GetSpecializationWithSpec:
+    stmt = (
+        select(Specialization)
+        .where(Specialization.id == specialization_id)
+        .options(selectinload(Specialization.specialists))
+        .order_by(Specialization.id)
+    )
+    speciality_with_spec = await async_session.scalar(stmt)
+    return speciality_with_spec
 
 
 async def get_specializations(

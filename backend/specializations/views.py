@@ -2,19 +2,17 @@ from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from specializations.models import Specialization
 from core.db.db_helper import db_async_helper
-from specializations.schemas import CreateSpecialization
-from specializations.dependencies import get_specialization_by_id
+from specializations.schemas import (
+    CreateSpecialization,
+    GetSpecializationWithSpec,
+)
+from specializations.dependencies import (
+    get_specialization_by_id,
+    get_specialization_by_id_with_existing_specialists,
+)
 from specializations import crud
 
 router = APIRouter(prefix="/specializations", tags=["Specializations"])
-
-
-@router.get("/{specialization_id}/")
-async def get_specialization(
-    specialization: Specialization = Depends(get_specialization_by_id),
-):
-    """Получение специализации по id"""
-    return specialization
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
@@ -36,6 +34,14 @@ async def get_list_specializations(
     return await crud.get_specializations(session)
 
 
+@router.get("/{specialization_id}/")
+async def get_specialization(
+    specialization: Specialization = Depends(get_specialization_by_id),
+):
+    """Получение специализации по id"""
+    return specialization
+
+
 @router.delete(
     "/{specialization_id}/",
     status_code=status.HTTP_204_NO_CONTENT,
@@ -48,3 +54,16 @@ async def delete_specialization(
     await crud.delete_specialization(
         specialization=specialization, async_session=session
     )
+
+
+@router.get(
+    "/{specialization_id}/specialists/",
+    status_code=status.HTTP_200_OK,
+    response_model=GetSpecializationWithSpec,
+)
+async def get_list_specialists_of_specializations(
+    specialization=Depends(get_specialization_by_id_with_existing_specialists),
+    session: AsyncSession = Depends(db_async_helper.session_dependency),
+):
+    """Список специалистов специализации"""
+    return specialization

@@ -19,3 +19,18 @@ async def get_specialization_by_id(
         status_code=status.HTTP_404_NOT_FOUND,
         detail="Специализация не найдена",
     )
+
+
+async def get_specialization_by_id_with_existing_specialists(
+    specialization_id: Annotated[int, Path],
+    session: AsyncSession = Depends(db_async_helper.session_dependency),
+):
+    specialization = await crud.get_spcialization_with_specialist(
+        specialization_id=specialization_id, async_session=session
+    )
+    if specialization is not None:
+        return specialization
+    raise HTTPException(
+        status_code=status.HTTP_404_NOT_FOUND,
+        detail="Специализация не найдена",
+    )
