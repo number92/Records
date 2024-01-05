@@ -9,6 +9,7 @@ from services.service_specialist_association import (
 
 if TYPE_CHECKING:
     from specializations.models import Specialization
+    from records.models import Record
 
 
 class Service(Base):
@@ -23,7 +24,7 @@ class Service(Base):
     specialization: Mapped["Specialization"] = relationship(
         back_populates="services"
     )
-
+    records: Mapped["Record"] = relationship(back_populates="service")
     specialists_detail: Mapped[
         list["SpecialistServiceAssociation"]
     ] = relationship(back_populates="service")

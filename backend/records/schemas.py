@@ -1,14 +1,34 @@
 from typing import Annotated
+from datetime import time, datetime
 from annotated_types import MaxLen
-from pydantic import BaseModel, ConfigDict, FutureDate, FutureDatetime
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    Field,
+    FutureDate,
+    field_validator,
+)
+
+time_h_m = time
+
+# date_d_m_y = Annotated[
+#     FutureDate,
+#     PlainSerializer(lambda x: date.strftime(x, "%d-%m-%Y")),
+# ]
 
 
 class SchemaRecord(BaseModel):
-    title: Annotated[str, MaxLen(256)]
-    date: FutureDate
-    time: FutureDatetime.time
-    user_id: int
-    specialist_id: int
+    date: FutureDate = Field(examples=["01/01/2023"])
+    time: time_h_m = Field(examples=["14:30"])
+    note: Annotated[str, MaxLen(256)] | None
+
+    @field_validator("date", mode="before")
+    def parse_date(cls, value):
+        return datetime.strptime(value, "%d/%m/%Y").date()
+
+    @field_validator("time", mode="before")
+    def parse_time(cls, value):
+        return datetime.strptime(value, "%H:%M").time()
 
 
 class CreateRecord(SchemaRecord):

@@ -8,7 +8,7 @@ from core.db.db_helper import db_async_helper
 
 
 async def get_service_by_id(
-    service_id: Annotated[int, Path],
+    service_id: int | Annotated[int, Path],
     session: AsyncSession = Depends(db_async_helper.session_dependency),
 ) -> Service:
     service = await crud.get_service(

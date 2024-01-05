@@ -1,7 +1,5 @@
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
-from services.dependencies import get_service_by_id
-from services.models import Service
 from specialists.models import Specialist
 from core.db.db_helper import db_async_helper
 from specialists.schemas import (
@@ -101,4 +99,3 @@ async def delete_specialist(
 ):
     """Удаление специалиста"""
     await crud.delete_specialist(specialist=specialist, async_session=session)
-

@@ -1,6 +1,9 @@
 from records.models import Record
 from records.schemas import CreateRecord
 from sqlalchemy.ext.asyncio import AsyncSession
+from services.models import Service
+from specialists.models import Specialist
+from users.models import User
 
 
 async def get_record(async_session: AsyncSession, record_id: int):
@@ -8,12 +11,19 @@ async def get_record(async_session: AsyncSession, record_id: int):
 
 
 async def create_record(
-    async_session: AsyncSession, record_in: CreateRecord
-) -> Record | None:
+    async_session: AsyncSession,
+    record_in: CreateRecord,
+    user: User,
+    specialist: Specialist,
+    service: Service,
+) -> Record:
     record = Record(**record_in.model_dump())
-
+    record.user = user
+    record.specialist = specialist
+    record.service = service
     async_session.add(record)
     await async_session.commit()
+    await async_session.refresh(record)
     return record
 
 

@@ -1,6 +1,3 @@
-from typing import Optional
-
-
 from sqlalchemy import String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from core.db.base import Base
@@ -14,6 +11,4 @@ class User(Base):
     name: Mapped[str] = mapped_column(String(256))
     telegram_id: Mapped[str]
     phone: Mapped[str]
-    records: Mapped[Optional[list["Record"]]] = relationship(
-        "Record", back_populates="user"
-    )
+    records: Mapped[list["Record"]] = relationship(back_populates="user")

@@ -18,4 +18,4 @@ class Specialist(Base):
     services_detail: Mapped[
         list["SpecialistServiceAssociation"]
     ] = relationship(back_populates="specialist", cascade="all")
-    records: Mapped[list["Record"]] = relationship()
+    records: Mapped[list["Record"]] = relationship(back_populates="specialist")

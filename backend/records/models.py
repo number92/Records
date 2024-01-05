@@ -5,15 +5,20 @@ from core.db.base import Base
 
 if TYPE_CHECKING:
     from users.models import User
+    from specialists.models import Specialist
+    from services.models import Service
 
 
 class Record(Base):
-    """Записи"""
+    """Запись"""
 
-    title: Mapped[str] = mapped_column(String(256))
     date: Mapped[TIMESTAMP] = mapped_column(Date)
     time: Mapped[TIMESTAMP] = mapped_column(Time)
-    is_free: Mapped[bool] = mapped_column(default=True)
+    is_free: Mapped[bool | None] = mapped_column(default=True)
+    note: Mapped[str] = mapped_column(String(256))
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
     specialist_id: Mapped[int] = mapped_column(ForeignKey("specialists.id"))
-    user: Mapped["User"] = relationship()
+    service_id: Mapped[int] = mapped_column(ForeignKey("services.id"))
+    user: Mapped["User"] = relationship(back_populates="records")
+    specialist: Mapped["Specialist"] = relationship(back_populates="records")
+    service: Mapped["Service"] = relationship(back_populates="records")
