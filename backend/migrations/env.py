@@ -10,7 +10,7 @@ from core.db.config import settings
 from users.models import User
 from services.models import Service
 from services.service_specialist_association import (
-    specialist_service_association,
+    SpecialistServiceAssociation,
 )
 from specialists.models import Specialist
 from specializations.models import Specialization

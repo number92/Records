@@ -1,10 +1,5 @@
-from typing import Annotated
-from annotated_types import MaxLen, MinLen
-from pydantic import BaseModel, ConfigDict
-from users.schemas import SchemaUser, Tg, Phone
-
-
-str = Annotated[str, MinLen(2), MaxLen(256)]
+from pydantic import BaseModel, ConfigDict, PositiveInt
+from users.schemas import Tg, Phone
 
 
 class SchemaSpecialist(BaseModel):
@@ -17,7 +12,12 @@ class BaseId(BaseModel):
     id: int
 
 
-class CreateSpecialist(SchemaUser, SchemaSpecialist):
+class BaseService(BaseId):
+    name: str
+    duration: PositiveInt
+
+
+class CreateSpecialist(Tg, Phone, SchemaSpecialist):
     model_config = ConfigDict(coerce_numbers_to_str=True)
 
 
@@ -33,8 +33,23 @@ class GetSpecialistWithPhone(Phone, SchemaSpecialist):
     model_config = ConfigDict(from_attributes=True)
 
 
-class SpecialistUpdatePartial(CreateSpecialist):
-    pass
+class ServiceDetail(BaseModel):
+    price: int | None = None
+    description: str | None = None
+    service: BaseService
+
+
+class SpecWithServices(GetSpecialist):
+    services_detail: list[ServiceDetail]
+    model_config = ConfigDict(from_attributes=True)
+
+
+class SpecialistUpdatePartial(Tg, Phone, SchemaSpecialist):
+    name: str | None = None
+    middle_name: str | None = None
+    last_name: str | None = None
+    phone: str | None = None
+    telegram_id: str | None = None
 
 
 class SpecialistUpdate(CreateSpecialist):

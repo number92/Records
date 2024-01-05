@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
-from specializations.dependencies import get_specialization_by_id
-from specializations.models import Specialization
+from services.dependencies import get_service_by_id
+from services.models import Service
 from specialists.models import Specialist
 from core.db.db_helper import db_async_helper
 from specialists.schemas import (
@@ -9,10 +9,11 @@ from specialists.schemas import (
     GetSpecialist,
     SpecialistUpdate,
     SpecialistUpdatePartial,
+    SpecWithServices,
 )
 from specialists.dependecies import (
     get_specialist_by_id,
-    get_specialist_by_id_with_existing_speciality,
+    get_specialist_by_id_with_existing_services,
 )
 from specialists import crud
 
@@ -47,17 +48,17 @@ async def get_specialist(
 
 
 @router.get(
-    "/{specialist_id}/specialties/",
+    "/{specialist_id}/services/",
     status_code=status.HTTP_200_OK,
+    response_model=SpecWithServices,
 )
-async def get_list_specialities_of_specialist(
+async def get_list_services_of_specialist(
     specialist: Specialist = Depends(
-        get_specialist_by_id_with_existing_speciality
+        get_specialist_by_id_with_existing_services
     ),
-    session: AsyncSession = Depends(db_async_helper.session_dependency),
 ):
-    """Список специальностей специалиста"""
-    return specialist.specializations
+    """Список услуг специалиста"""
+    return specialist
 
 
 @router.put("/{specialist_id}/", status_code=status.HTTP_200_OK)
@@ -101,40 +102,3 @@ async def delete_specialist(
     """Удаление специалиста"""
     await crud.delete_specialist(specialist=specialist, async_session=session)
 
-
-@router.post(
-    "/{specialist_id}/specialties/{specialization_id}/",
-    status_code=status.HTTP_201_CREATED,
-)
-async def add_specialization_to_specialist(
-    specialist: Specialist = Depends(
-        get_specialist_by_id_with_existing_speciality
-    ),
-    specialization: Specialization = Depends(get_specialization_by_id),
-    session: AsyncSession = Depends(db_async_helper.session_dependency),
-):
-    """Добавление специальности к специалисту"""
-    return await crud.add_speciality_to_specialist(
-        async_session=session,
-        specialist=specialist,
-        specialization=specialization,
-    )
-
-
-@router.delete(
-    "/{specialist_id}/specialties/{specialization_id}/",
-    status_code=status.HTTP_204_NO_CONTENT,
-)
-async def delete_specialization_to_specialist(
-    specialist: Specialist = Depends(
-        get_specialist_by_id_with_existing_speciality
-    ),
-    specialization: Specialization = Depends(get_specialization_by_id),
-    session: AsyncSession = Depends(db_async_helper.session_dependency),
-):
-    """Добавление специальности к специалисту"""
-    await crud.delete_speciality_to_specialist(
-        async_session=session,
-        specialist=specialist,
-        specialization=specialization,
-    )

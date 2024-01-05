@@ -1,9 +1,14 @@
-from specialists.models import Specialist
+from typing import TYPE_CHECKING
+
 from core.db.base import Base
-from sqlalchemy.orm import Mapped, relationship
+from sqlalchemy import ForeignKey
+from sqlalchemy.orm import Mapped, relationship, mapped_column
 from services.service_specialist_association import (
-    specialist_service_association,
+    SpecialistServiceAssociation,
 )
+
+if TYPE_CHECKING:
+    from specializations.models import Specialization
 
 
 class Service(Base):
@@ -11,7 +16,14 @@ class Service(Base):
 
     name: Mapped[str]
     duration: Mapped[int]
-    price: Mapped[int | None]
-    specialists: Mapped[list["Specialist"]] = relationship(
-        secondary=specialist_service_association, back_populates="services"
+
+    specialization_id: Mapped[int] = mapped_column(
+        ForeignKey("specializations.id", ondelete="SET NULL"), nullable=True
     )
+    specialization: Mapped["Specialization"] = relationship(
+        back_populates="services"
+    )
+
+    specialists_detail: Mapped[
+        list["SpecialistServiceAssociation"]
+    ] = relationship(back_populates="service")

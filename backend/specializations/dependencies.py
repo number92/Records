@@ -21,11 +21,11 @@ async def get_specialization_by_id(
     )
 
 
-async def get_specialization_by_id_with_existing_specialists(
+async def get_specialization_by_id_with_existing_services(
     specialization_id: Annotated[int, Path],
     session: AsyncSession = Depends(db_async_helper.session_dependency),
 ):
-    specialization = await crud.get_spcialization_with_specialist(
+    specialization = await crud.get_specialization_with_services(
         specialization_id=specialization_id, async_session=session
     )
     if specialization is not None:

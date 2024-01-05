@@ -1,5 +1,5 @@
 from pydantic import BaseModel, ConfigDict
-from specialists.schemas import GetSpecialist
+from services.schemas import GetService
 
 
 class SchemaSpecialization(BaseModel):
@@ -11,8 +11,8 @@ class GetSpecialization(SchemaSpecialization):
     model_config = ConfigDict(from_attributes=True)
 
 
-class GetSpecializationWithSpec(GetSpecialization):
-    specialists: list[GetSpecialist]
+class GetSpecializationWithServices(GetSpecialization):
+    services: list[GetService]
     model_config = ConfigDict(from_attributes=True)
 
 

@@ -4,11 +4,11 @@ from specializations.models import Specialization
 from core.db.db_helper import db_async_helper
 from specializations.schemas import (
     CreateSpecialization,
-    GetSpecializationWithSpec,
+    GetSpecializationWithServices,
 )
 from specializations.dependencies import (
     get_specialization_by_id,
-    get_specialization_by_id_with_existing_specialists,
+    get_specialization_by_id_with_existing_services,
 )
 from specializations import crud
 
@@ -57,13 +57,12 @@ async def delete_specialization(
 
 
 @router.get(
-    "/{specialization_id}/specialists/",
+    "/{specialization_id}/services/",
     status_code=status.HTTP_200_OK,
-    response_model=GetSpecializationWithSpec,
+    response_model=GetSpecializationWithServices,
 )
-async def get_list_specialists_of_specializations(
-    specialization=Depends(get_specialization_by_id_with_existing_specialists),
-    session: AsyncSession = Depends(db_async_helper.session_dependency),
+async def get_list_services_of_specializations(
+    specialization=Depends(get_specialization_by_id_with_existing_services),
 ):
-    """Список специалистов специализации"""
+    """Список услуг специализации"""
     return specialization
