@@ -1,3 +1,4 @@
+from sqlalchemy import Result, select
 from records.models import Record
 from records.schemas import CreateRecord
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -28,4 +29,6 @@ async def create_record(
 
 
 async def get_records_list(async_session: AsyncSession):
-    pass
+    stmt = select(Record).order_by(Record.id)
+    result: Result = await async_session.execute(stmt)
+    return result.scalars().all()
