@@ -32,3 +32,8 @@ async def get_records_list(async_session: AsyncSession):
     stmt = select(Record).order_by(Record.id)
     result: Result = await async_session.execute(stmt)
     return result.scalars().all()
+
+
+async def delete_record(record: Record, async_session: AsyncSession):
+    await async_session.delete(record)
+    await async_session.commit()

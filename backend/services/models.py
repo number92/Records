@@ -24,7 +24,7 @@ class Service(Base):
     specialization: Mapped["Specialization"] = relationship(
         back_populates="services"
     )
-    records: Mapped["Record"] = relationship(back_populates="service")
+    records: Mapped[list["Record"]] = relationship(back_populates="service")
     specialists_detail: Mapped[
         list["SpecialistServiceAssociation"]
     ] = relationship(back_populates="service")

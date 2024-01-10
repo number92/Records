@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from services.dependencies import get_service_by_id
 from services.models import Service
@@ -8,28 +8,21 @@ from users.dependencies import get_user_by_id
 from users.models import User
 from core.db.db_helper import db_async_helper
 from records import crud
-from records.schemas import CreateRecord
+from records.schemas import CreateRecord, GetRecordWithAllRelations
+from records.models import Record
+from backend.records.dependencies import (
+    get_record_by_id,
+    get_record_with_all_relations,
+)
 
 router = APIRouter(prefix="/records", tags=["Records"])
-
-
-@router.get("/{id}/")
-async def get_record(
-    id: int,
-    session: AsyncSession = Depends(db_async_helper.session_dependency),
-):
-    record = await crud.get_record(record_id=id, async_session=session)
-    if record is not None:
-        return record
-    raise HTTPException(
-        status_code=status.HTTP_404_NOT_FOUND, detail="Запись не найден"
-    )
 
 
 @router.get("/")
 async def get_records_list(
     session: AsyncSession = Depends(db_async_helper.session_dependency),
 ):
+    """Получение списка записей"""
     return await crud.get_records_list(session)
 
 
@@ -41,6 +34,7 @@ async def create_record(
     service: Service = Depends(get_service_by_id),
     session: AsyncSession = Depends(db_async_helper.session_dependency),
 ):
+    """Добавление записи"""
     return await crud.create_record(
         record_in=record_in,
         async_session=session,
@@ -48,3 +42,20 @@ async def create_record(
         specialist=specialist,
         service=service,
     )
+
+
+@router.get("/{id}/", response_model=GetRecordWithAllRelations)
+async def get_record(
+    record: Record = Depends(get_record_with_all_relations),
+):
+    """Получение записи по id"""
+    return record
+
+
+@router.delete("/{id}/", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_record(
+    record: Record = Depends(get_record_by_id),
+    session: AsyncSession = Depends(db_async_helper.session_dependency),
+):
+    """Удаление записи"""
+    await crud.delete_record(record=record, async_session=session)

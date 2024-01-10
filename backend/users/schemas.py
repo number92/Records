@@ -36,6 +36,10 @@ class SchemaUser(Phone, Tg):
     name: Annotated[str, MinLen(2), MaxLen(256)]
 
 
+class SchemaUserPhone(Phone):
+    name: Annotated[str, MinLen(2), MaxLen(256)]
+
+
 class CreateUser(SchemaUser):
     model_config = ConfigDict(coerce_numbers_to_str=True)
 

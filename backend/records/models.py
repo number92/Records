@@ -1,5 +1,12 @@
 from typing import TYPE_CHECKING
-from sqlalchemy import ForeignKey, String, TIMESTAMP, Date, Time
+from sqlalchemy import (
+    ForeignKey,
+    String,
+    TIMESTAMP,
+    Date,
+    Time,
+    UniqueConstraint,
+)
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from core.db.base import Base
 
@@ -11,6 +18,18 @@ if TYPE_CHECKING:
 
 class Record(Base):
     """Запись"""
+
+    __table_args__ = (
+        UniqueConstraint(
+            "date",
+            "time",
+            "specialist_id",
+            name="idx_unique_datetime_specialist",
+        ),
+        UniqueConstraint(
+            "date", "time", "user_id", name="idx_unique_datetime_user"
+        ),
+    )
 
     date: Mapped[TIMESTAMP] = mapped_column(Date)
     time: Mapped[TIMESTAMP] = mapped_column(Time)
