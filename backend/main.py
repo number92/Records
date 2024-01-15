@@ -1,5 +1,7 @@
 # import uvicorn
+import asyncio
 from fastapi import FastAPI
+
 from users.views import router as users_router
 from services.views import router as services_router
 from specializations.views import router as specializations_router
@@ -13,5 +15,7 @@ app.include_router(services_router)
 app.include_router(specializations_router)
 app.include_router(specialists_router)
 app.include_router(records_router)
+
+
 # if __name__ == "__main__":
 #     uvicorn.run(app, host="0.0.0.0", port=8000)

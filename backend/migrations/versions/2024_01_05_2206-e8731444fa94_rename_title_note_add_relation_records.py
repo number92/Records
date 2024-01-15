@@ -42,7 +42,7 @@ def downgrade() -> None:
             "title",
             sa.VARCHAR(length=256),
             autoincrement=False,
-            nullable=False,
+            nullable=True,
         ),
     )
     op.drop_constraint(None, "records", type_="foreignkey")

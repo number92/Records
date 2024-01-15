@@ -132,5 +132,7 @@ dmypy.json
 .idea
 
 # draw.io
-*.$Models
-*.$path
+.$Models.drawio.bkp
+.$path.drawio.bkp
+Models.drawio
+path.drawio

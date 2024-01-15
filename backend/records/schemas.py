@@ -1,18 +1,18 @@
 from typing import Annotated
-from datetime import datetime, date
+from datetime import datetime, date, time
 from annotated_types import MaxLen
 from pydantic import (
     BaseModel,
     ConfigDict,
     Field,
-    FutureDate,
     field_validator,
 )
 from services.schemas import SchemaService
 from specialists.schemas import GetSpecialistWithPhone
 from users.schemas import SchemaUserPhone
 
-time_h_m = datetime
+time_h_m = time
+date_ge = date
 
 
 class SchemaRecord(BaseModel):
@@ -27,7 +27,7 @@ class SchemaRecord(BaseModel):
 
 
 class CreateRecord(BaseModel):
-    date: FutureDate = Field(examples=["01/01/2023"])
+    date: date_ge = Field(ge=date.today(), examples=["01/01/2023"])
     time: time_h_m = Field(examples=["14:30"])
     note: Annotated[str, MaxLen(256)] | None
     is_free: bool = False

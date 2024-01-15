@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
+from core.utils import get_list_records_in_next_two_weeks
 from specialists.models import Specialist
 from core.db.db_helper import db_async_helper
 from specialists.schemas import (
@@ -99,3 +100,15 @@ async def delete_specialist(
 ):
     """Удаление специалиста"""
     await crud.delete_specialist(specialist=specialist, async_session=session)
+
+
+@router.get(
+    "/{specialist_id}/schedule",
+)
+async def get_schedule(
+    specialist_id: int,
+    session: AsyncSession = Depends(db_async_helper.session_dependency),
+):
+    return await get_list_records_in_next_two_weeks(
+        session=session, specialist_id=specialist_id
+    )

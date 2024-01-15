@@ -16,6 +16,7 @@ from specialists.models import Specialist
 from specializations.models import Specialization
 from records.models import Record
 
+
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config

@@ -7,6 +7,7 @@ class Settings(BaseSettings):
     DB_NAME: str
     DB_HOST: str
     DB_PORT: int
+    BOT_TOKEN: str
 
     @property
     def DATABASE_URL_asyncpg(self):

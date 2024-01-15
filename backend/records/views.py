@@ -10,7 +10,7 @@ from core.db.db_helper import db_async_helper
 from records import crud
 from records.schemas import CreateRecord, GetRecordWithAllRelations
 from records.models import Record
-from backend.records.dependencies import (
+from records.dependencies import (
     get_record_by_id,
     get_record_with_all_relations,
 )
