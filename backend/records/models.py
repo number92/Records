@@ -34,7 +34,7 @@ class Record(Base):
     date: Mapped[TIMESTAMP] = mapped_column(Date)
     time: Mapped[TIMESTAMP] = mapped_column(Time)
     is_free: Mapped[bool | None] = mapped_column(default=True)
-    note: Mapped[str] = mapped_column(String(256))
+    note: Mapped[str | None] = mapped_column(String(256))
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
     specialist_id: Mapped[int] = mapped_column(ForeignKey("specialists.id"))
     service_id: Mapped[int] = mapped_column(ForeignKey("services.id"))
