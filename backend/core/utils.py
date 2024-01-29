@@ -1,27 +1,27 @@
-import asyncio
-import os
-import sys
+# import os
+# import sys
 import re
-from fastapi import Depends
+
 import regex
 import phonenumbers
 from datetime import date as d, datetime as dt, timedelta as td
-from sqlalchemy import Result, select, text
+from sqlalchemy import Result, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import func
 from sqlalchemy.dialects.postgresql import INTERVAL
 from sqlalchemy.sql.functions import concat
 
 
-sys.path.insert(0, os.path.join(os.getcwd()))
-sys.path.insert(0, os.path.join(os.getcwd(), "backend"))
+# sys.path.insert(0, os.path.join(os.getcwd()))
+# sys.path.insert(0, os.path.join(os.getcwd(), "backend"))
 
-# if __name__ == "__main__":
+
 from services.models import Service
 from specialists.models import Specialist
 from records.models import Record
 from core import constants
-from core.db.db_helper import db_async_helper
+
+# from core.db.db_helper import db_async_helper, async_session
 
 
 def normalize_num(number: str):
@@ -56,7 +56,11 @@ def normalize_num(number: str):
 
 
 def check_not_busy_time(starttime: dt, duration: int):
-    """Проверка: не занято ли время?"""
+    """
+    Проверка: не занято ли время?
+    На вход время записи и длительность услуги
+    на выход {is_free: bool}
+    """
     endtime = starttime + td(minutes=duration)
     res = {"is_free": True}
     for busy_time in constants.BUSY_TIME:
@@ -94,7 +98,7 @@ def time_during_the_day(date: dt, duration: int):
     return res
 
 
-# day1 = dt(2024, 1, 15)
+# day1 = dt(2024, 1, 30)
 # print(time_during_the_day(date=day1, duration=30))
 
 
@@ -129,10 +133,15 @@ async def get_list_records_in_next_two_weeks(
     )
     result: Result = await session.execute(statement=stmt)
     return result.scalars().all()
+    # async with session() as session:
+    #     # result: Result = await session.execute(statement=stmt)
+    #     print(await session.scalars(statement=stmt))
+    #     await session.close()
 
 
 # asyncio.run(
 #     get_list_records_in_next_two_weeks(
-#         specialist_id=1, session=Depends(db_async_helper.session_dependency)
+#                                    specialist_id=1,
+#                                    session=async_session
 #     )
 # )

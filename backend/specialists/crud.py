@@ -1,8 +1,10 @@
+from fastapi import HTTPException, status
 from sqlalchemy import Result, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from specialists.models import Specialist
+from specialists.models import ProfileInfoSpecialist, Specialist
 from specialists.schemas import (
+    CreateProfileSpecialist,
     CreateSpecialist,
     SpecialistUpdatePartial,
     SpecialistUpdate,
@@ -52,3 +54,25 @@ async def delete_specialist(
 ):
     await async_session.delete(specialist)
     await async_session.commit()
+
+
+async def create_profile(
+    async_session: AsyncSession,
+    profile: CreateProfileSpecialist,
+    specialist: Specialist,
+) -> ProfileInfoSpecialist:
+    spec = ProfileInfoSpecialist(
+        specialist=specialist.id, **profile.model_dump()
+    )
+    stmt = select(ProfileInfoSpecialist).where(
+        ProfileInfoSpecialist.specialist == specialist.id
+    )
+    check_duplicate = await async_session.execute(stmt)
+    if check_duplicate.scalar():
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Профиль специалиста уже существует",
+        )
+    async_session.add(spec)
+    await async_session.commit()
+    return spec

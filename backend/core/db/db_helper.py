@@ -37,6 +37,11 @@ db_async_helper = DatabaseaAsyncHelper(
     echo=True,
 )
 
+async_engine = create_async_engine(
+    url=settings.DATABASE_URL_asyncpg,
+    echo=True,
+)
+async_session = async_sessionmaker(async_engine)
 
 sync_engine = create_engine(
     url=settings.DATABASE_URL_psycopg,

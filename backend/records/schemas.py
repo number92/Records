@@ -12,7 +12,9 @@ from specialists.schemas import GetSpecialistWithPhone
 from users.schemas import SchemaUserPhone
 
 time_h_m = time
-date_ge = date
+date_ge = Annotated[
+    datetime, Field(ge=datetime.today().date(), examples=["01/01/2023"])
+]
 
 
 class SchemaRecord(BaseModel):
@@ -27,7 +29,7 @@ class SchemaRecord(BaseModel):
 
 
 class CreateRecord(BaseModel):
-    date: date_ge = Field(ge=date.today(), examples=["01/01/2023"])
+    date: date_ge
     time: time_h_m = Field(examples=["14:30"])
     note: Annotated[str, MaxLen(256)] | None
     is_free: bool = False

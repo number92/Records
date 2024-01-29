@@ -22,23 +22,36 @@ async def create_record(
     specialist: Specialist,
     service: Service,
 ) -> Record:
-    stmt = select(assoc).where(
+    exist_service_specialist_relation = select(assoc).where(
         assoc.service_id == service.id, assoc.specialist_id == specialist.id
     )
-    check_service = await async_session.execute(stmt)
-    if check_service.scalar():
-        record = Record(**record_in.model_dump())
-        record.user = user
-        record.specialist = specialist
-        record.service = service
-        async_session.add(record)
-        await async_session.commit()
-        await async_session.refresh(record)
-        return record
-    return HTTPException(
-        status_code=status.HTTP_404_NOT_FOUND,
-        detail="Специалист не оказывает этой услуги",
+    check_service = await async_session.execute(
+        exist_service_specialist_relation
     )
+    if not check_service.scalar():
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Услуга отсутствует у этого специалиста",
+        )
+    stmt = select(Record).where(
+        Record.time == record_in.time
+        and Record.date == record_in.date
+        and Record.specialist_id == specialist.id
+    )
+    check_duplicate = await async_session.execute(stmt)
+    if check_duplicate.scalar():
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Запись к специалисту на эту дату и время уже существует",
+        )
+    record = Record(**record_in.model_dump())
+    record.user = user
+    record.specialist = specialist
+    record.service = service
+    async_session.add(record)
+    await async_session.commit()
+    await async_session.refresh(record)
+    return record
 
 
 async def get_records_list(async_session: AsyncSession):

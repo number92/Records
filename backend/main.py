@@ -1,5 +1,3 @@
-# import uvicorn
-import asyncio
 from fastapi import FastAPI
 
 from users.views import router as users_router

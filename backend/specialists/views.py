@@ -4,6 +4,7 @@ from core.utils import get_list_records_in_next_two_weeks
 from specialists.models import Specialist
 from core.db.db_helper import db_async_helper
 from specialists.schemas import (
+    CreateProfileSpecialist,
     CreateSpecialist,
     GetSpecialist,
     SpecialistUpdate,
@@ -100,6 +101,18 @@ async def delete_specialist(
 ):
     """Удаление специалиста"""
     await crud.delete_specialist(specialist=specialist, async_session=session)
+
+
+@router.post("/{specialist_id}/profile")
+async def create_profile(
+    profile: CreateProfileSpecialist,
+    specialist: Specialist = Depends(get_specialist_by_id),
+    session: AsyncSession = Depends(db_async_helper.session_dependency),
+):
+    """Создание  профиля специалиста"""
+    return await crud.create_profile(
+        specialist=specialist, async_session=session, profile=profile
+    )
 
 
 @router.get(

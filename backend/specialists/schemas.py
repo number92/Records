@@ -1,5 +1,7 @@
-from pydantic import BaseModel, ConfigDict, PositiveInt
+from typing import List, Optional
+from pydantic import BaseModel, ConfigDict, Field, PositiveInt
 from users.schemas import Tg, Phone
+from datetime import time
 
 
 class SchemaSpecialist(BaseModel):
@@ -54,3 +56,9 @@ class SpecialistUpdatePartial(Tg, Phone, SchemaSpecialist):
 
 class SpecialistUpdate(CreateSpecialist):
     pass
+
+
+class CreateProfileSpecialist(BaseModel):
+    start_work: time = Field(examples=["10:00"])
+    end_work: time = Field(examples=["18:00"])
+    busy_time: Optional[List[time]] = Field(examples=[["12:30", "16:30"]])

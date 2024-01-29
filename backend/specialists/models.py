@@ -1,4 +1,6 @@
-from sqlalchemy import String
+from sqlalchemy import TIMESTAMP, String, ForeignKey, Time
+from sqlalchemy.dialects.postgresql import ARRAY
+from sqlalchemy.ext.mutable import MutableList
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from core.db.base import Base
 from records.models import Record
@@ -19,3 +21,14 @@ class Specialist(Base):
         list["SpecialistServiceAssociation"]
     ] = relationship(back_populates="specialist", cascade="all")
     records: Mapped[list["Record"]] = relationship(back_populates="specialist")
+
+
+class ProfileInfoSpecialist(Base):
+    """Стандартные настройки специалиста"""
+
+    specialist: Mapped[int] = mapped_column(
+        ForeignKey("specialists.id", ondelete="cascade"), unique=True
+    )
+    start_work: Mapped[TIMESTAMP | None] = mapped_column(Time)
+    end_work: Mapped[TIMESTAMP | None] = mapped_column(Time)
+    busy_time: Mapped[MutableList | None] = mapped_column(ARRAY(Time))
