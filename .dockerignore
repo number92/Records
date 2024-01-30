@@ -1,0 +1,6 @@
+venv
+.venv
+.git
+.vscode
+.gitignore
+Makefile
