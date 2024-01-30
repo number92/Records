@@ -1,23 +1,27 @@
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from core.utils import get_list_records_in_next_two_weeks
-from specialists.models import Specialist
+from specialists.models import ProfileInfoSpecialist, Specialist
 from core.db.db_helper import db_async_helper
 from specialists.schemas import (
     CreateProfileSpecialist,
     CreateSpecialist,
     GetSpecialist,
+    ProfileSpecialist,
+    ProfileUpdatePartial,
     SpecialistUpdate,
     SpecialistUpdatePartial,
     SpecWithServices,
 )
 from specialists.dependecies import (
+    get_profile_by_id,
     get_specialist_by_id,
     get_specialist_by_id_with_existing_services,
 )
 from specialists import crud
 
-router = APIRouter(prefix="/specialists", tags=["Specialists"])
+router = APIRouter(prefix="/specialists", tags=["Специалист"])
+router_profile = APIRouter(prefix="/specialists", tags=["Профиль специалиста"])
 
 
 @router.get("/", response_model=list[GetSpecialist])
@@ -103,7 +107,23 @@ async def delete_specialist(
     await crud.delete_specialist(specialist=specialist, async_session=session)
 
 
-@router.post("/{specialist_id}/profile")
+@router.get(
+    "/{specialist_id}/schedule",
+    status_code=status.HTTP_200_OK,
+    summary="Расписание записей на две недели",
+)
+async def get_schedule(
+    specialist_id: int,
+    session: AsyncSession = Depends(db_async_helper.session_dependency),
+):
+    return await get_list_records_in_next_two_weeks(
+        session=session, specialist_id=specialist_id
+    )
+
+
+@router_profile.post(
+    "/{specialist_id}/profile", status_code=status.HTTP_201_CREATED
+)
 async def create_profile(
     profile: CreateProfileSpecialist,
     specialist: Specialist = Depends(get_specialist_by_id),
@@ -115,13 +135,31 @@ async def create_profile(
     )
 
 
-@router.get(
-    "/{specialist_id}/schedule",
+@router_profile.get(
+    "/{specialist_id}/profile",
+    response_model=ProfileSpecialist,
+    status_code=status.HTTP_200_OK,
 )
-async def get_schedule(
-    specialist_id: int,
+async def get_profile_specialist(
+    profile: ProfileInfoSpecialist = Depends(get_profile_by_id),
+):
+    return profile
+
+
+@router_profile.patch(
+    "/{specialist_id}/profile",
+    status_code=status.HTTP_200_OK,
+    response_model=ProfileSpecialist,
+)
+async def update_profile_partial(
+    profile_update: ProfileUpdatePartial,
+    profile: ProfileInfoSpecialist = Depends(get_profile_by_id),
     session: AsyncSession = Depends(db_async_helper.session_dependency),
 ):
-    return await get_list_records_in_next_two_weeks(
-        session=session, specialist_id=specialist_id
+    """Частичное обновление профиля специалиста"""
+    return await crud.update_profile(
+        profile_update=profile_update,
+        profile=profile,
+        async_session=session,
+        partial=True,
     )

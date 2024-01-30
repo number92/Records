@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from services.service_specialist_association import (
     SpecialistServiceAssociation,
 )
-from specialists.models import Specialist
+from specialists.models import Specialist, ProfileInfoSpecialist
 from specialists import crud
 from core.db.db_helper import db_async_helper
 
@@ -46,4 +46,19 @@ async def get_specialist_by_id_with_existing_services(
     raise HTTPException(
         status_code=status.HTTP_404_NOT_FOUND,
         detail="Специалист не найден",
+    )
+
+
+async def get_profile_by_id(
+    specialist_id: Annotated[int, Path],
+    session: AsyncSession = Depends(db_async_helper.session_dependency),
+) -> ProfileInfoSpecialist:
+    profile = await crud.get_profile(
+        specialist_id=specialist_id, async_session=session
+    )
+    if profile is not None:
+        return profile
+    raise HTTPException(
+        status_code=status.HTTP_404_NOT_FOUND,
+        detail="Профиль не найден",
     )

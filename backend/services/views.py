@@ -15,7 +15,7 @@ from services.schemas import (
 from services import crud
 from core.db.db_helper import db_async_helper
 
-router = APIRouter(prefix="/services", tags=["Service"])
+router = APIRouter(prefix="/services", tags=["Услуга"])
 
 
 @router.get("/")

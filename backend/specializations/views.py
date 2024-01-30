@@ -12,7 +12,7 @@ from specializations.dependencies import (
 )
 from specializations import crud
 
-router = APIRouter(prefix="/specializations", tags=["Specializations"])
+router = APIRouter(prefix="/specializations", tags=["Специализация"])
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED)

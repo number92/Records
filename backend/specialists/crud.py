@@ -1,11 +1,13 @@
 from fastapi import HTTPException, status
 from sqlalchemy import Result, select
 from sqlalchemy.ext.asyncio import AsyncSession
-
-from specialists.models import ProfileInfoSpecialist, Specialist
+from specialists import validators
+from specialists.models import ProfileInfoSpecialist as Profile, Specialist
 from specialists.schemas import (
     CreateProfileSpecialist,
     CreateSpecialist,
+    ProfileUpdate,
+    ProfileUpdatePartial,
     SpecialistUpdatePartial,
     SpecialistUpdate,
 )
@@ -60,13 +62,9 @@ async def create_profile(
     async_session: AsyncSession,
     profile: CreateProfileSpecialist,
     specialist: Specialist,
-) -> ProfileInfoSpecialist:
-    spec = ProfileInfoSpecialist(
-        specialist=specialist.id, **profile.model_dump()
-    )
-    stmt = select(ProfileInfoSpecialist).where(
-        ProfileInfoSpecialist.specialist == specialist.id
-    )
+) -> Profile:
+    spec = Profile(specialist=specialist.id, **profile.model_dump())
+    stmt = select(Profile).where(Profile.specialist == specialist.id)
     check_duplicate = await async_session.execute(stmt)
     if check_duplicate.scalar():
         raise HTTPException(
@@ -76,3 +74,35 @@ async def create_profile(
     async_session.add(spec)
     await async_session.commit()
     return spec
+
+
+async def get_profile(
+    async_session: AsyncSession,
+    specialist_id: int,
+) -> Profile | None:
+    stmt = select(Profile).where(Profile.specialist == specialist_id)
+    profile: Result = await async_session.execute(stmt)
+    return profile.scalar_one_or_none()
+
+
+async def update_profile(
+    async_session: AsyncSession,
+    profile: Profile,
+    profile_update: ProfileUpdatePartial | ProfileUpdate,
+    partial: bool = False,
+) -> Profile:
+    for name, value in profile_update.model_dump().items():
+        if not value:
+            value = getattr(profile, name)
+        setattr(profile, name, value)
+    if validators.validate_consistency_time(
+        profile.start_work,
+        profile.end_work,
+    ):
+        await async_session.commit()
+        return profile
+    else:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Начало работы не должно быть позднее ее окончания",
+        )

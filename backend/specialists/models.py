@@ -29,6 +29,6 @@ class ProfileInfoSpecialist(Base):
     specialist: Mapped[int] = mapped_column(
         ForeignKey("specialists.id", ondelete="cascade"), unique=True
     )
-    start_work: Mapped[TIMESTAMP | None] = mapped_column(Time)
-    end_work: Mapped[TIMESTAMP | None] = mapped_column(Time)
+    start_work: Mapped[TIMESTAMP] = mapped_column(Time)
+    end_work: Mapped[TIMESTAMP] = mapped_column(Time)
     busy_time: Mapped[MutableList | None] = mapped_column(ARRAY(Time))

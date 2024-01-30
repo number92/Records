@@ -6,7 +6,7 @@ from users import crud
 from users.dependencies import get_user_by_id
 from core.db.db_helper import db_async_helper
 
-router = APIRouter(prefix="/users", tags=["Users"])
+router = APIRouter(prefix="/users", tags=["Пользователь"])
 
 
 @router.get("/")

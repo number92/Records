@@ -15,7 +15,7 @@ from records.dependencies import (
     get_record_with_all_relations,
 )
 
-router = APIRouter(prefix="/records", tags=["Records"])
+router = APIRouter(prefix="/records", tags=["Запись"])
 
 
 @router.get("/")
