@@ -12,7 +12,7 @@ from aiogram.filters import CommandStart
 sys.path.insert(0, os.path.join(os.getcwd()))
 
 if __name__ == "__main__":
-    from core.db.config import settings
+    from backend.core.db.config import settings
 
 
 dp = Dispatcher()

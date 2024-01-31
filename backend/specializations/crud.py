@@ -1,6 +1,7 @@
 from sqlalchemy import Result, select
 from sqlalchemy.orm import selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
+from core.utils import get_or_create
 from specializations.models import Specialization
 from specializations.schemas import (
     CreateSpecialization,
@@ -37,11 +38,11 @@ async def get_specializations(
 async def create_specialization(
     async_session: AsyncSession, spec: CreateSpecialization
 ) -> Specialization:
-    specialization = Specialization(**spec.model_dump())
-
-    async_session.add(specialization)
-    await async_session.commit()
-    return specialization
+    return await get_or_create(
+        async_session=async_session,
+        model=Specialization,
+        **spec.model_dump(),
+    )
 
 
 async def delete_specialization(

@@ -2,9 +2,9 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    DB_USER: str
-    DB_PASS: str
-    DB_NAME: str
+    POSTGRES_USER: str
+    POSTGRES_PASSWORD: str
+    POSTGRES_DB: str
     DB_HOST: str
     DB_PORT: int
     BOT_TOKEN: str
@@ -13,8 +13,9 @@ class Settings(BaseSettings):
     def DATABASE_URL_asyncpg(self):
         # DSN postgresql+asyncpg://postgres:@localhost:5433/postgres
         url = (
-            f"postgresql+asyncpg://{self.DB_USER}:{self.DB_PASS}"
-            f"@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
+            "postgresql+asyncpg://"
+            + f"{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}"
+            + f"@{self.DB_HOST}:{self.DB_PORT}/{self.POSTGRES_DB}"
         )
         return url
 
@@ -22,8 +23,9 @@ class Settings(BaseSettings):
     def DATABASE_URL_psycopg(self):
         # DSN postgresql+psycopg://postgres:@localhost:5433/postgres
         url = (
-            f"postgresql+psycopg://{self.DB_USER}:{self.DB_PASS}"
-            f"@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
+            "postgresql+psycopg://"
+            + f"{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}"
+            + f"@{self.DB_HOST}:{self.DB_PORT}/{self.POSTGRES_DB}"
         )
         return url
 

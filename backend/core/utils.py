@@ -6,6 +6,7 @@ import regex
 import phonenumbers
 from datetime import date as d, datetime as dt, timedelta as td
 from sqlalchemy import Result, select
+from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import func
 from sqlalchemy.dialects.postgresql import INTERVAL
@@ -15,13 +16,24 @@ from sqlalchemy.sql.functions import concat
 # sys.path.insert(0, os.path.join(os.getcwd()))
 # sys.path.insert(0, os.path.join(os.getcwd(), "backend"))
 
-
 from services.models import Service
 from specialists.models import Specialist
 from records.models import Record
 from core import constants
 
 # from core.db.db_helper import db_async_helper, async_session
+
+
+async def get_or_create(async_session: AsyncSession, model, **kwargs):
+    try:
+        instance = await async_session.execute(
+            select(model).filter_by(**kwargs)
+        )
+    except NoResultFound:
+        instance = model(**kwargs)
+        async_session.add(instance)
+        await async_session.commit()
+    return instance.scalar_one()
 
 
 def normalize_num(number: str):

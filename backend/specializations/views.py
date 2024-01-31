@@ -21,9 +21,10 @@ async def create_specialization(
     session: AsyncSession = Depends(db_async_helper.session_dependency),
 ):
     """Создание специализации"""
-    return await crud.create_specialization(
+    spec = await crud.create_specialization(
         spec=specialization, async_session=session
     )
+    return f"Специализация {spec.name} добавлена."
 
 
 @router.get("/")

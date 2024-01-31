@@ -1,6 +1,7 @@
 version: "3.8"
 
-
+volumes:
+  pg_data:
 
 services:
   db:
@@ -8,16 +9,18 @@ services:
     container_name: db
     restart: always
     env_file:
-      - .env
-    environment:
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - ../backend/.env
+    volumes:
+        - ./init-database.sh:/docker-entrypoint-initdb.d/init-database.sh
+        - pg_data:/var/lib/postgresql/data
   fastapi_backend:
     depends_on:
       - db
     container_name: fastapi_backend
     build:
-        context: ./backend
+        context: ../backend
         dockerfile: Dockerfile
     env_file: 
-      - ./.env
+      - ../backend/.env
+    ports:
+      - 8000:8000
